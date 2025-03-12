@@ -470,7 +470,7 @@ def prepare_chat_input(prompt, files):
 def main():
     initialize_session_state()
 
-    st.title("💬 Onco-AIDE")
+    st.title("🩺 Onco-AIDE")
     
     # Display messages in the main chat area (outside the sidebar)
     for message in st.session_state.messages:
