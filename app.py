@@ -651,7 +651,7 @@ def initialize_session_state():
         st.session_state.chat_session = st.session_state.chat_model.start_chat(history=[])
 
     if 'messages' not in st.session_state:
-        initial_message = """Hello! Mainframe AI speaking. How can I assist you today?"""
+        initial_message = """Welcome to the Onco-AI Dialogue Engine. What would you like to learn about?"""
         st.session_state.messages = [
             {"role": "assistant", "content": initial_message}
         ]
