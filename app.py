@@ -202,70 +202,10 @@ st.set_page_config(
 # Custom CSS
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
-
-    * {
-        font-family: 'Montserrat', sans-serif !important;
-    }
 
     .stChatInputContainer {
         display: flex;
         align-items: center;
-    }
-    .back-button {
-        width: 300px;
-        margin-top: 20px;
-        padding: 10px 20px;
-        font-size: 18px;
-        background-color: #0b1936;
-        color: #5799f7;
-        border: 2px solid #4a83d4;
-        border-radius: 10px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-family: 'Montserrat', sans-serif !important;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        box-shadow: 0 0 15px rgba(74, 131, 212, 0.3);
-        position: relative;
-        overflow: hidden;
-        display: inline-block;
-    }
-    .back-button:hover {
-        background-color: #1c275c;
-        color: #73abfa;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 8px rgba(74, 131, 212, 0.2);
-    }
-    .back-button:hover:before {
-        transform: translateY(-100%);
-        color: #73abfa;
-    }
-    .file-preview {
-        max-height: 200px;
-        overflow: hidden;
-        margin-bottom: 10px;
-    }
-    .file-preview img, .file-preview video, .file-preview audio {
-        max-width: 100%;
-        max-height: 200px;
-        object-fit: contain;
-    }
-
-    .stMarkdown, .stText, .stTitle, .stHeader {
-        font-family: 'Montserrat', sans-serif !important;
-    }
-    
-    .stButton button {
-        font-family: 'Montserrat', sans-serif !important;
-    }
-    
-    .stTextInput input {
-        font-family: 'Montserrat', sans-serif !important;
-    }
-    
-    .stSelectbox select {
-        font-family: 'Montserrat', sans-serif !important;
     }
 </style>
 <script>
