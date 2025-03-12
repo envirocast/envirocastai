@@ -798,9 +798,9 @@ def main():
         with st.expander("**Settings & Preferences**", expanded=False):
             # Font selection
             available_fonts = [
-                "Montserrat", "Orbitron", "DM Sans", "Calibri", 
+                "Montserrat", "DM Sans", "Calibri", 
                 "Arial", "Times New Roman", "Roboto", "Open Sans",
-                "Lato", "Poppins", "Ubuntu", "Playfair Display"
+                "Lato", "Poppins", "Ubuntu", "Orbitron", "Playfair Display"
             ]
             
             # Font search/filter
@@ -898,34 +898,11 @@ def main():
                 
                 st.session_state.uploaded_files = valid_files
 
-    # Camera Input Section
-    with st.sidebar:
-        with st.expander("**Camera Input**", expanded=False):
-            camera_enabled = st.checkbox("Enable camera", value=st.session_state.camera_enabled)
-            
-            if camera_enabled != st.session_state.camera_enabled:
-                st.session_state.camera_enabled = camera_enabled
-                st.session_state.camera_image = None
-                
-            if st.session_state.camera_enabled:
-                camera_image = st.camera_input("Take a picture")
-                if camera_image is not None:
-                    st.session_state.camera_image = camera_image
-                    st.image(camera_image, caption="Captured Image")
-                    st.success("Image captured! You can now ask about the image.")
-
-    # Voice Input Section
-    with st.sidebar:
-        with st.expander("**Voice Input**", expanded=False):
-            audio_input = st.audio_input("Record your question")
-
     # Prebuilt Commands Section
     with st.sidebar:
-        with st.expander("**Prebuilt Commands**", expanded=False):
+        with st.expander("**Frequently Asked Questions**", expanded=False):
             if 'current_command' not in st.session_state:
                 st.session_state.current_command = None
-                
-            st.write("**Active:**", st.session_state.current_command if st.session_state.current_command else "None")
             
             for cmd, info in PREBUILT_COMMANDS.items():
                 col1, col2 = st.columns([4, 1])
@@ -1048,7 +1025,7 @@ def main():
             
             try:
                 response = st.session_state.chat_session.send_message(input_parts)
-                full_response = handle_chat_response(response, message_placeholder, command_message)
+                full_response = handle_chat_response(response, message_placeholder)
                 
                 st.session_state.messages.append({
                     "role": "assistant", 
