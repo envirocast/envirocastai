@@ -831,16 +831,16 @@ def main():
         with st.expander("**FAQ**", expanded=False): 
             for command_name in PREBUILT_COMMANDS: 
                 if st.button(command_name): 
-                    # Directly add the prebuilt command to the chat history 
+                    # Add the prebuilt command to the chat history 
                     st.session_state.messages.append({"role": "user", "content": command_name}) 
 
-                    # Trigger the chat response handling 
+                    # Display the AI response in the main chat area 
                     with st.chat_message("assistant"): 
-                        message_placeholder = st.empty() 
+                        message_placeholder = st.empty()  # Placeholder for streaming 
                         try: 
                             response = st.session_state.chat_session.send_message(PREBUILT_COMMANDS[command_name]["prompt"]) 
-                            handle_chat_response(response, message_placeholder, PREBUILT_COMMANDS[command_name]["message_text"]) 
-                            st.session_state.messages.append({"role": "assistant", "content": response.text}) 
+                            full_response = handle_chat_response(response, message_placeholder, PREBUILT_COMMANDS[command_name]["message_text"]) 
+                            st.session_state.messages.append({"role": "assistant", "content": full_response}) 
                         except Exception as e: 
                             st.error(f"An error occurred: {str(e)}") 
 
