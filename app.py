@@ -722,6 +722,7 @@ def main():
     # Sign Out Button and Settings
     with st.sidebar:
         st.link_button("Back to OncoAI", "https://oncoai.org/")
+        st.divider()
         with st.expander("**Settings & Preferences**", expanded=False):
             # Font selection
             available_fonts = [
