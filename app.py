@@ -333,88 +333,6 @@ After every message, put a new line and type out Citations: in bold, and provide
 
 """
 
-PREBUILT_COMMANDS = {
-    "/weeklyhgflashcards": {
-        "title": "/weeklyhgflashcards",
-        "description": "Paste a list of human geography terms.",
-        "prompt": "With the following AP Human Geography vocabulary words, please created a list formatted as such: (IMPORTANT: Everywhere after, where it says Term, replace that with the term listed, don't explicitly write Term: and Definition: - make sure that you don't write out 'Definition' you actually put the definition of the term before) First, the line begins with Term: (in bold) Definition. The next two lines use a bullleted list format. The first bullet is In Other Words: (in bold) then a rephrasing/restatement/another way to say the term. The next bullet point is Examples: (in bold) and then comma-separated list of 2-5 examples of that term. For the next terms, go to the next line without any bullets for the definition once more.",
-        "message_text": " ----- **Active Command:** Weekly Human Geography Flashcards ----- ", 
-    },
-    "/cornellformat": {
-        "title": "/cornellformat",
-        "description": "Paste your digital notes.",
-        "prompt": "Format the following notes into a Cornell Notes tabular format. First, before the table, should be the title. Then, create a table with two columns and multiple rows as necessary. The header for the two columns is Cues | Notes. The cues section contains questions that the corresponding notes answer. There can be multiple related lines of notes for one cue. At the end of all the cues & notes, after the table, type Summary: (in bold) and then a comprehensive, detailed summary of the notes with all necessary information while keeping it concise.",
-        "message_text": " ----- **Active Command:** Cornell Notes Format ----- ", 
-    },
-    "/answer4math": {
-        "title": "/answer4math",
-        "description": "Provide math questions in a typed-out, image, PDF, or other file format.",
-        "prompt": "Extract the math questions from the text or file added. If image, OCR and gain information. For other file formats, proceed as necessary. Provide the answer to each question systematically along with work and steps. Format as such: If there is an identifier (ex. #1) for a question, use that before. Then, within 1-2 lines (no enters or new lines, keep everything just in one line, super concise, use markdown as necessary), show the steps to get to the answer, and then provide the answer bolded. Make sure these work for multiple choice, open-ended, and free-response question types. Make sure to use optimal accuracy and confirm all answers.",
-        "message_text": " ----- **Active Command:** Math Answers ----- ", 
-    },
-    "/summarize": {
-        "title": "/summarize",
-        "description": "Provide a long set of notes/an article.",
-        "prompt": "Summarize the following notes or article into key points and brief 1-2 paragraph summary. Highlight the most important concepts and facts, focus on key definitions. Make sure it's in paragraph format.",
-        "message_text": " ----- **Active Command:** Summary ----- ", 
-    },
-    "/check4grammar": {
-        "title": "/check4grammar",
-        "description": "Provide a set of text for grammar to be verified.",
-        "prompt": "Check the following text for grammatical errors and provide a bulleted list of corrections needed to fix. At the end, in a new line, provide the full text completed revised. Highligh the revised sections in bold.",
-        "message_text": " ----- **Active Command:** Grammar Check ----- ", 
-    },
-    "/paraphrase": {
-        "title": "/paraphrase",
-        "description": "Provide a set of text to be paraphrased.",
-        "prompt": "Provide only a rephrased version of the text. Change wording, structure, and organization of the text provided. Change vocabulary as appropriate and confirm that the main messages are kept intact while wording and structure is edited.",
-        "message_text": " ----- **Active Command:** Paraphraser ----- ", 
-    },
-    "/synonyms": {
-        "title": "/synonyms",
-        "description": "Provide a word to find synonyms.",
-        "prompt": "For the word provided below, provide a definition, examples, and also synonyms. Also provide 1-3 antonyms at the bottom.",
-        "message_text": " ----- **Active Command:** Synonyms ----- ", 
-    },
-    "/citation": {
-        "title": "/citation",
-        "description": "Paste any information for a source and what citation style you need.",
-        "prompt": "With the following information, format into a citation based on the citation style mentioned below. If there is no citation style, make it in multiple formats.",
-        "message_text": " ----- **Active Command:** Citation Format ----- ", 
-    },
-    "/essayoutline": {
-        "title": "/essayoutline",
-        "description": "Paste a topic for an essay, as detailed as possible.",
-        "prompt": "Based on the following topic provided and details, create a 5-paragraph essay outline (unless otherwise mentioned below for changes in the numbers of paragraphs or format) which has an introduction, three body paragraphs, and a conclusion. It should be formatted very professionally with clear topics and correct grammar.",
-        "message_text": " ----- **Active Command:** Essay Outline Creation ----- ", 
-    },
-    "/litanalysis": {
-        "title": "/litanalysis",
-        "description": "Provide of piece of literature or an excerpt to be analyzed.",
-        "prompt": "Analyze the following text and provide detailed, comprehensive summaries and insights on characters, themes, main ideas or various sections, and symbolism used. Have a comprehensive view for a high school classroom-type insight for the literature provided.",
-        "message_text": " ----- **Active Command:** Literature Analysis Tool ----- ", 
-    },
-    "/translation": {
-        "title": "/translation",
-        "description": "Provide a piece of text and what language the text is in and what is must be translated to.",
-        "prompt": "Based on the text below, translate it to the language provide based on what the text is in.",
-        "message_text": " ----- **Active Command:** Translator ----- ", 
-    },
-    "/wordcount": {
-        "title": "/wordcount",
-        "description": "Provide a piece of text, an image, PDF file, or other file format.",
-        "prompt": "Based on the provided data in the files or text input, count the number of words in the submission and provide it back. Do not include this prompt portion. Only include the words after this. Also don't include the [/command] section as well. Only the part after this.",
-        "message_text": " ----- **Active Command:** Word Counter ----- ", 
-    },
-    "/code": {
-        "title": "/code",
-        "description": "Provide instructions on the specifics of how you would like the code to be completed.",
-        "prompt": "Based on the instructions, create code for the file OR FILES suggested by the following instructions. Be sure to provide detailed information if necessary. Use advanced coding.",
-        "message_text": " ----- **Active Command:** Programmer ----- ", 
-    }
-    # Add more as needed
-}
-
 def extract_pdf_text(file):
     try:
         # Try using PyMuPDF (fitz) first for better PDF extraction
@@ -885,7 +803,7 @@ def main():
 
     # Prebuilt Commands Section
     with st.sidebar:
-        with st.expander("**Frequently Asked Questions**", expanded=False):
+        with st.expander("**FAQ**", expanded=False):
             if 'current_command' not in st.session_state:
                 st.session_state.current_command = None
             
