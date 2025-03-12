@@ -19,115 +19,6 @@ import base64
 from datetime import datetime, timedelta
 
 # Check for password in session state and persistent login
-def get_persistent_login():
-    if 'persistent_login' in st.session_state:
-        return st.session_state.persistent_login
-    
-    # Try to load from local storage
-    placeholder_div = st.empty()
-    placeholder_div.markdown(
-        """
-        <div id="check_persistent_login" style="display:none;"></div>
-        <script>
-            const checkLogin = document.getElementById('check_persistent_login');
-            const loginData = localStorage.getItem('mainframe_ai_login');
-            if (loginData) {
-                const loginInfo = JSON.parse(loginData);
-                if (loginInfo && loginInfo.expiry && new Date(loginInfo.expiry) > new Date()) {
-                    checkLogin.innerText = 'true';
-                } else {
-                    localStorage.removeItem('mainframe_ai_login');
-                    checkLogin.innerText = 'false';
-                }
-            } else {
-                checkLogin.innerText = 'false';
-            }
-            setTimeout(() => {
-                window.parent.postMessage({
-                    type: 'streamlit:setComponentValue',
-                    value: checkLogin.innerText === 'true',
-                    dataType: 'bool',
-                    key: 'persistent_login_check'
-                }, '*');
-            }, 100);
-        </script>
-        """,
-        unsafe_allow_html=True
-    )
-    
-    # Wait for the JavaScript to set the value
-    if 'persistent_login_check' in st.session_state:
-        placeholder_div.empty()
-        st.session_state.persistent_login = st.session_state.persistent_login_check
-        return st.session_state.persistent_login
-    
-    return False
-
-def set_persistent_login():
-    # Set expiry to 30 days from now
-    expiry = (datetime.now() + timedelta(days=30)).isoformat()
-    
-    st.markdown(
-        f"""
-        <script>
-            localStorage.setItem('mainframe_ai_login', JSON.stringify({{
-                expiry: '{expiry}'
-            }}));
-        </script>
-        """,
-        unsafe_allow_html=True
-    )
-    st.session_state.persistent_login = True
-
-def clear_persistent_login():
-    st.markdown(
-        """
-        <script>
-            localStorage.removeItem('mainframe_ai_login');
-        </script>
-        """,
-        unsafe_allow_html=True
-    )
-    st.session_state.persistent_login = False
-
-def check_password():
-    """Returns `True` if the user had the correct password."""
-    
-    # Initialize and apply font preferences first
-    initialize_font_preferences()
-    apply_font_preferences()
-    apply_accessibility_settings()
-    
-    def password_entered():
-        """Checks whether a password entered by the user is correct."""
-        if st.session_state["password"] == st.secrets["PASSWORD"]:
-            st.session_state["password_correct"] = True
-            del st.session_state["password"]  # Don't store the password
-        else:
-            st.session_state["password_correct"] = False
-
-    # Return True if the password is validated
-    if st.session_state.get("password_correct", False):
-        return True
-
-    # Show input for password
-    st.title("💬 Mainframe AI")
-    
-    st.markdown("### Please enter the password to access Mainframe AI")
-    
-    # Create password input field
-    st.text_input(
-        "Password", 
-        type="password", 
-        on_change=password_entered, 
-        key="password"
-    )
-    
-    if "password_correct" in st.session_state:
-        if not st.session_state["password_correct"]:
-            st.error("😕 Incorrect password. Please try again.")
-    
-    return False
 
 def initialize_font_preferences():
     if 'font_preferences' not in st.session_state:
@@ -898,10 +789,6 @@ def prepare_chat_input(prompt, files):
     return input_parts
 
 def main():
-    # Check password first
-    if not check_password():
-        return
-    
     initialize_session_state()
 
     st.title("💬 Mainframe AI")
