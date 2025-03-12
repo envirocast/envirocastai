@@ -337,11 +337,7 @@ PREBUILT_COMMANDS = {
     "What is cancer?": { 
         "prompt": "Define cancer in simple terms.", 
         "message_text": "Here's a definition of cancer:" 
-    }, 
-    "What are the types of cancer?": { 
-        "prompt": "List the main types of cancer.", 
-        "message_text": "Here are some of the main types of cancer:" 
-    }, 
+    },
     "What causes cancer?": { 
         "prompt": "Explain the causes of cancer.", 
         "message_text": "The causes of cancer are complex, but here's an explanation:" 
