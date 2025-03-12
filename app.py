@@ -938,44 +938,6 @@ def main():
         with st.chat_message(message["role"]):
             st.markdown(message["content"], unsafe_allow_html=True)
 
-    # Handle audio input
-    if audio_input is not None:
-        audio_hash = get_audio_hash(audio_input)
-        
-        if audio_hash not in st.session_state.processed_audio_hashes:
-            try:
-                audio_file = save_audio_file(audio_input)
-                st.audio(audio_input, format='audio/wav')
-                
-                try:
-                    st.info("Converting speech to text...")
-                    transcribed_text = convert_audio_to_text(audio_file)
-                    
-                    st.success("Speech converted to text!")
-                    st.text(f"Transcribed text: {transcribed_text}")
-                    
-                    st.chat_message("user").markdown(transcribed_text)
-                    st.session_state.messages.append({"role": "user", "content": transcribed_text})
-                    
-                    with st.chat_message("assistant"):
-                        message_placeholder = st.empty()
-                        response = st.session_state.chat_session.send_message(transcribed_text)
-                        full_response = handle_chat_response(response, message_placeholder)
-                        
-                        st.session_state.messages.append({
-                            "role": "assistant", 
-                            "content": full_response
-                        })
-                    
-                    st.session_state.processed_audio_hashes.add(audio_hash)
-                    
-                finally:
-                    os.unlink(audio_file)
-                    
-            except Exception as e:
-                st.error(f"An error occurred while processing the audio: {str(e)}")
-                st.warning("Please try again or type your question instead.")
-
     # Chat input handling
     prompt = st.chat_input("What can I help you with?")
 
