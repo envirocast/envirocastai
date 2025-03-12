@@ -826,25 +826,30 @@ def main():
                 
                 st.session_state.uploaded_files = valid_files
 
-    # Prebuilt Commands Section 
-    with st.sidebar: 
-        with st.expander("**FAQ**", expanded=False): 
-            for command_name in PREBUILT_COMMANDS: 
-                if st.button(command_name): 
-                    # Add the prebuilt command to the chat history 
-                    st.session_state.messages.append({"role": "user", "content": command_name}) 
-
-                    # Display the AI response in the main chat area 
-                    with st.chat_message("assistant"): 
-                        message_placeholder = st.empty()  # Placeholder for streaming 
-                        try: 
-                            response = st.session_state.chat_session.send_message(PREBUILT_COMMANDS[command_name]["prompt"]) 
-                            full_response = handle_chat_response(response, message_placeholder, PREBUILT_COMMANDS[command_name]["message_text"]) 
-                            st.session_state.messages.append({"role": "assistant", "content": full_response}) 
-                        except Exception as e: 
-                            st.error(f"An error occurred: {str(e)}") 
-
-    # Display messages
+    # Prebuilt Commands Section
+    with st.sidebar:
+        with st.expander("**FAQ**", expanded=False):
+            for command_name in PREBUILT_COMMANDS:
+                if st.button(command_name):
+                    # Add the prebuilt command to the chat history
+                    st.session_state.messages.append({"role": "user", "content": command_name})
+    
+                    # Display the AI response in the main chat area
+                    with st.chat_message("assistant"):
+                        message_placeholder = st.empty()  # Placeholder for streaming
+                        try:
+                            # Send the prebuilt command prompt to the chat session
+                            response = st.session_state.chat_session.send_message(PREBUILT_COMMANDS[command_name]["prompt"])
+    
+                            # Handle the response and update the chat history
+                            full_response = handle_chat_response(response, message_placeholder, PREBUILT_COMMANDS[command_name]["message_text"])
+                            st.session_state.messages.append({"role": "assistant", "content": full_response})
+    
+                        except Exception as e:
+                            # Display error if something goes wrong
+                            st.error(f"An error occurred: {str(e)}")
+    
+    # Display messages in the main chat area (outside the sidebar)
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"], unsafe_allow_html=True)
