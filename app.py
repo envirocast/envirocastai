@@ -333,6 +333,30 @@ After every message, put a new line and type out Citations: in bold, and provide
 
 """
 
+PREBUILT_COMMANDS = { 
+    "What is cancer?": { 
+        "prompt": "Define cancer in simple terms.", 
+        "message_text": "Here's a definition of cancer:" 
+    }, 
+    "What are the types of cancer?": { 
+        "prompt": "List the main types of cancer.", 
+        "message_text": "Here are some of the main types of cancer:" 
+    }, 
+    "What causes cancer?": { 
+        "prompt": "Explain the causes of cancer.", 
+        "message_text": "The causes of cancer are complex, but here's an explanation:" 
+    }, 
+    "How is cancer treated?": { 
+        "prompt": "Describe common cancer treatments.", 
+        "message_text": "Common cancer treatments include:" 
+    }, 
+    "What is cancer research?": { 
+        "prompt": "Explain the importance of cancer research.", 
+        "message_text": "Cancer research is crucial because:" 
+    }, 
+    # Add more prebuilt commands here... 
+} 
+
 def extract_pdf_text(file):
     try:
         # Try using PyMuPDF (fitz) first for better PDF extraction
@@ -801,40 +825,14 @@ def main():
                 
                 st.session_state.uploaded_files = valid_files
 
-    # Prebuilt Commands Section
-    with st.sidebar:
-        with st.expander("**FAQ**", expanded=False):
-            if 'current_command' not in st.session_state:
-                st.session_state.current_command = None
-            
-            for cmd, info in PREBUILT_COMMANDS.items():
-                col1, col2 = st.columns([4, 1])
-                
-                with col1:
-                    button_active = st.session_state.current_command == cmd
-                    if st.button(
-                        info["title"],
-                        key=f"cmd_{cmd}",
-                        type="primary" if button_active else "secondary"
-                    ):
-                        if st.session_state.current_command == cmd:
-                            st.session_state.current_command = None
-                        else:
-                            st.session_state.current_command = cmd
-                        st.rerun()
-                
-                with col2:
-                    help_key = f"help_{cmd}"
-                    if help_key not in st.session_state:
-                        st.session_state[help_key] = False
-                    
-                    button_text = "×" if st.session_state[help_key] else "?"
-                    if st.button(button_text, key=f"help_btn_{cmd}"):
-                        st.session_state[help_key] = not st.session_state[help_key]
-                        st.rerun()
-                
-                if st.session_state[help_key]:
-                    st.info(info["description"])
+    # Prebuilt Commands Section 
+    with st.sidebar: 
+        with st.expander("**FAQ**", expanded=False): 
+            for command_name, command_data in PREBUILT_COMMANDS.items(): 
+                if st.button(command_name): 
+                    st.session_state.current_command = command_name 
+                    st.session_state.uploaded_files = [] #Clear uploaded files when using a prebuilt command. 
+                    st.rerun()
 
     # Display messages
     for message in st.session_state.messages:
