@@ -29,7 +29,7 @@ def initialize_font_preferences():
             <div id="load_font_preferences" style="display:none;"></div>
             <script>
                 const prefDiv = document.getElementById('load_font_preferences');
-                const savedPrefs = localStorage.getItem('mainframe_ai_font');
+                const savedPrefs = localStorage.getItem('onco_aide_font');
                 if (savedPrefs) {
                     prefDiv.innerText = savedPrefs;
                 } else {
@@ -74,7 +74,7 @@ def save_font_preferences():
     st.markdown(
         f"""
         <script>
-            localStorage.setItem('mainframe_ai_font', '{prefs_json}');
+            localStorage.setItem('onco_aide_font', '{prefs_json}');
         </script>
         """,
         unsafe_allow_html=True
@@ -145,7 +145,7 @@ def initialize_custom_commands():
             <div id="load_commands" style="display:none;"></div>
             <script>
                 const cmdDiv = document.getElementById('load_commands');
-                const savedCmds = localStorage.getItem('mainframe_ai_custom_commands');
+                const savedCmds = localStorage.getItem('onco_aide_custom_commands');
                 if (savedCmds) {
                     cmdDiv.innerText = savedCmds;
                 } else {
@@ -179,7 +179,7 @@ def save_custom_commands():
     st.markdown(
         f"""
         <script>
-            localStorage.setItem('mainframe_ai_custom_commands', '{cmds_json}');
+            localStorage.setItem('onco_aide_custom_commands', '{cmds_json}');
         </script>
         """,
         unsafe_allow_html=True
@@ -194,7 +194,7 @@ genai.configure(api_key=GEMINI_API_KEY)
 
 # Page configuration
 st.set_page_config(
-    page_title="Mainframe AI",
+    page_title="Onco-AIDE",
     page_icon="./favicon.ico",
     layout="wide"
 )
@@ -230,23 +230,6 @@ st.markdown("""
         position: relative;
         overflow: hidden;
         display: inline-block;
-    }
-    .back-button:before {
-        content: 'BACK TO INTERLINK';
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: #0b1936;
-        transition: transform 0.3s ease;
-        font-size: 18px;
-        color: #5799f7;
-        text-align: center;
-        font-family: 'Montserrat', sans-serif !important;
     }
     .back-button:hover {
         background-color: #1c275c;
@@ -340,12 +323,13 @@ generation_config = {
 }
 
 SYSTEM_INSTRUCTION = """
-Name: Your name is Mainframe AI.
-Technology: You are powered by Google Gemini.
+Name: Your name is Onco-AIDE. Your name stands for Onco-AI Dialogue Engine
 
 Behavioral Guidelines:
 Be helpful and professional, ensuring accuracy in every response.
 Maintain a friendly, approachable tone while providing precise and concise answers.
+Keep all discussions focused around cancer studies.
+After every message, put a new line and type out Citations: in bold, and provide any relevant links online to helpful sources as a citation of sorts.
 
 """
 
@@ -524,7 +508,7 @@ def save_accessibility_preferences():
     st.markdown(
         f"""
         <script>
-            localStorage.setItem('mainframe_ai_accessibility', '{prefs_json}');
+            localStorage.setItem('onco_aide_accessibility', '{prefs_json}');
         </script>
         """,
         unsafe_allow_html=True
@@ -539,7 +523,7 @@ def apply_accessibility_settings():
             <div id="load_accessibility" style="display:none;"></div>
             <script>
                 const accDiv = document.getElementById('load_accessibility');
-                const savedPrefs = localStorage.getItem('mainframe_ai_accessibility');
+                const savedPrefs = localStorage.getItem('onco_aide_accessibility');
                 if (savedPrefs) {
                     accDiv.innerText = savedPrefs;
                 } else {
@@ -791,10 +775,11 @@ def prepare_chat_input(prompt, files):
 def main():
     initialize_session_state()
 
-    st.title("💬 Mainframe AI")
+    st.title("💬 Onco-AIDE")
 
     # Sign Out Button and Settings
     with st.sidebar:
+        st.link_button("Back to OncoAI", "https://oncoai.org/")
         with st.expander("**Settings & Preferences**", expanded=False):
             # Font selection
             available_fonts = [
