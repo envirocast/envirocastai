@@ -334,10 +334,6 @@ After every message, put a new line and type out Citations: in bold, and provide
 """
     
 def initialize_session_state():
-    # Initialize font preferences
-    initialize_font_preferences()
-    apply_font_preferences()
-    apply_accessibility_settings()
     
     if 'chat_model' not in st.session_state:
         st.session_state.chat_model = genai.GenerativeModel(
