@@ -829,11 +829,20 @@ def main():
     # Prebuilt Commands Section 
     with st.sidebar: 
         with st.expander("**FAQ**", expanded=False): 
-            for command_name, command_data in PREBUILT_COMMANDS.items(): 
+            for command_name in PREBUILT_COMMANDS: 
                 if st.button(command_name): 
-                    st.session_state.current_command = command_name 
-                    st.session_state.uploaded_files = [] #Clear uploaded files when using a prebuilt command. 
-                    st.rerun()
+                    # Directly add the prebuilt command to the chat history 
+                    st.session_state.messages.append({"role": "user", "content": command_name}) 
+
+                    # Trigger the chat response handling 
+                    with st.chat_message("assistant"): 
+                        message_placeholder = st.empty() 
+                        try: 
+                            response = st.session_state.chat_session.send_message(PREBUILT_COMMANDS[command_name]["prompt"]) 
+                            handle_chat_response(response, message_placeholder, PREBUILT_COMMANDS[command_name]["message_text"]) 
+                            st.session_state.messages.append({"role": "assistant", "content": response.text}) 
+                        except Exception as e: 
+                            st.error(f"An error occurred: {str(e)}") 
 
     # Display messages
     for message in st.session_state.messages:
