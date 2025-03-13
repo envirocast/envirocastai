@@ -461,9 +461,9 @@ def prepare_chat_input(prompt, files):
 def main():
     initialize_session_state()
 
+    st.title("🩺 OncoAIDE")
     st.link_button("Back to **OncoAI**", "https://oncoai.org/")
     st.divider()
-    st.title("🩺 OncoAIDE")
     
     # Display messages in the main chat area (outside the sidebar)
     for message in st.session_state.messages:
