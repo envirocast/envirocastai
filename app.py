@@ -194,7 +194,7 @@ genai.configure(api_key=GEMINI_API_KEY)
 
 # Page configuration
 st.set_page_config(
-    page_title="Onco-AIDE",
+    page_title="OncoAIDE",
     page_icon="./favicon.ico",
     layout="wide"
 )
@@ -263,7 +263,7 @@ generation_config = {
 }
 
 SYSTEM_INSTRUCTION = """
-Name: Your name is Onco-AIDE. Your name stands for Onco-AI Dialogue Engine
+Name: Your name is OncoAIDE. Your name stands for OncoAI Dialogue Engine
 
 Behavioral Guidelines:
 Be helpful and professional, ensuring accuracy in every response.
@@ -272,8 +272,8 @@ Keep all discussions focused around cancer studies.
 Always make sure to keep the discussion focused around cancer and studying it or OncoAI.
 After every message, put a new line and type out Citations: in bold, and provide any relevant links online to helpful sources as a citation of sorts.
 
-INFORMATION ABOUT ONCO-AIDE:
-Onco-AIDE stands for Onco-AI Dialogue Engine is an AI chatbot companion to OncoAI, a free, universally-accessible diagnostic cancer tool at https://oncoai.org/.
+INFORMATION ABOUT ONCOAIDE:
+OncoAIDE stands for OncoAI Dialogue Engine is an AI chatbot companion to OncoAI, a free, universally-accessible diagnostic cancer tool at https://oncoai.org/.
 OncoAI can screen for (1) Brain Cancer, (2) Pancreatic Cancer, (3) Lung Colon, (4) Colon Cancer, (5) Breast Cancer, (6) Gastrointestinal Cancer, (7) Cervical Cancer, (8) Skin Cancer, (9) Osteosarcoma/Bone Cancer, and (1) Fundus Neoplasm/Ocular Neoplasm.
 One can upload a SINGLE image for a detailed view of the breakdown of their cancer prediction or upload multiple for a quick show of results.
 An overall summary of predictions is provided showing the total images upload, time taken for full screening, and breakdown of categories.
@@ -319,7 +319,7 @@ def initialize_session_state():
         st.session_state.chat_session = st.session_state.chat_model.start_chat(history=[])
 
     if 'messages' not in st.session_state:
-        initial_message = """Welcome to the Onco-AI Dialogue Engine. What would you like to learn about?"""
+        initial_message = """Welcome to the OncoAI Dialogue Engine. What would you like to learn about?"""
         st.session_state.messages = [
             {"role": "assistant", "content": initial_message}
         ]
@@ -463,7 +463,7 @@ def main():
 
     st.link_button("Back to **OncoAI**", "https://oncoai.org/")
     st.divider()
-    st.title("🩺 Onco-AIDE")
+    st.title("🩺 OncoAIDE")
     
     # Display messages in the main chat area (outside the sidebar)
     for message in st.session_state.messages:
@@ -471,7 +471,7 @@ def main():
             st.markdown(message["content"], unsafe_allow_html=True)
 
     # Chat input handling
-    prompt = st.chat_input("What can I help you with?")
+    prompt = st.chat_input("What would you like to learn about?")
 
     if prompt:
         final_prompt = prompt
