@@ -368,6 +368,24 @@ def save_audio_file(audio_data):
         tmpfile.write(audio_bytes)
         return tmpfile.name
 
+def process_response(text):
+    lines = text.split('\n')
+    processed_lines = []
+    
+    for line in lines:
+        if re.match(r'^\d+\.', line.strip()):
+            processed_lines.append('\n' + line.strip())
+        elif line.strip().startswith('*') or line.strip().startswith('-'):
+            processed_lines.append('\n' + line.strip())
+        else:
+            processed_lines.append(line)
+    
+    text = '\n'.join(processed_lines)
+    text = re.sub(r'\n\s*\n\s*\n', '\n\n', text)
+    text = re.sub(r'(\n[*-] .+?)(\n[^*\n-])', r'\1\n\2', text)
+    
+    return text.strip()
+
 def handle_chat_response(response, message_placeholder, command_message=""):
     full_response = ""
     
