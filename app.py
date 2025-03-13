@@ -463,7 +463,7 @@ def main():
 
     st.title("🩺 OncoAIDE")
     st.link_button("Back to **OncoAI**", "https://oncoai.org/")
-    st.divider()
+    #st.divider()
     
     # Display messages in the main chat area (outside the sidebar)
     for message in st.session_state.messages:
