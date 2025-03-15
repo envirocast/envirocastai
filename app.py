@@ -304,6 +304,54 @@ Pancreatic [~1500 images] - Kaggle (https://www.kaggle.com/datasets/jayaprakashp
 Gastrointestinal [~200000 images] - Kaggle (https://www.kaggle.com/datasets/joangibert/tcga_coad_msi_mss_jpg), Zenodo Record (https://zenodo.org/records/2530835#.XVPlRHUzYeM)
 
 Total: ~310000 images
+
+-- MORE INFORMATION --
+OncoAI solves the problem of the global cancer crisis and how diagnostic challenges lead to healthcare inequities. The need is early detection, accurate diagnosis, and universal applicability of such a tool. OncoAI was the solution as an AI-powered application for multimodal imaging.
+The constraints of OncoAI are possible data biases, ethical concerns, or infrastructure limitations.
+
+For the study in which OncoAI was built, the hypothesis was 'Efficient AI-powered deep learning models integrated into a multi-platform application can achieve unparalleled accuracy, precision and scalability in diagnosing and classifying diverse cancers globally.'
+The aim was 'to develop a universal, AI-driven application for early detection, accurate classification and therapy response evaluation of multiple cancers across diverse imaging modalities and populations worldwide.'
+The objectives were (1) to evaluate deep learning architectures on multimodal cancer imaging for precise tumor detection and classification, (2) to integrate efficient AI models into a scalable, crossplatform application for improved computational performance, and (3) to provide a universally-accessible affordable diagnostic solution promote and enhance equitable healthcare.
+
+The training data was split into 60% training, 20% validation, 20% testing for all the individual cancers.
+The steps in creating the OncoAI application involved (1) exporting PTH models from the Python code, (2) using HuggingFace Large File Storage (LFS) to create publicly-available APIs for the PTH models, (3) programming the application through GitHub, (4) hosting the application on web through Streamlit Community Cloud and (5) validating the application through experts worldwide.
+
+The methodology of the product had three phases.
+Phase 1 was evaluating 7 AI models (EfficientNet B0 & B1, ResNet 18, 34, 50, 101, 152 - all the ResNets) for accuracy, loss, precision, recall, F1 and F2 scores over 30 epochs to see which is the best for accuracy in classifying medical images. EfficientNetB0 and ResNet18 were the most optimal.
+Phase 2 was evaluating EfficientNetB0 and ResNet18 in different clinical conditions (normal vs. malignant, benign vs. malignant, different types of imaging, more than two categories, cancers of different cellular origins, multiple cancers, microsatellite instabilities, data from different places in the world, and tumor viability).
+Phase 3 was developing the OncoAI application.
+
+The accuracy of EfficientNetB0 in classifying fundus neoplasm was 99% for the 'Normal' category and 100% for the 'Malignant' category.
+The accuracy of ResNet18 in classifying fundus neoplasm was 97% for the 'Normal' category and 98% for the 'Malignant' category.
+The accuracy of EfficientNetB0 in classifying breast tumors using histopathological examinations was 100% for the 'Benign' category and 100% for the 'Malignant' category.
+The accuracy of ResNet18 in classifying breast tumors using histopathological examinations was 99% for the 'Benign' category and 99% for the 'Malignant' category.
+The accuracy of EfficientNetB0 in classifying pancreatic tumors was 100% for the 'Normal' category and 100% for the 'Malignant' category.
+The accuracy of ResNet18 in classifying pancreatic tumors was 98% for the 'Normal' category and 97% for the 'Malignant' category.
+The accuracy of EfficientNetB0 in classifying skin lesions was 100% for the 'Benign' category and 99% for the 'Malignant' category.
+The accuracy of ResNet18 in classifying skin lesions was 95% for the 'Benign' category and 95% for the 'Malignant' category.
+The accuracy of EfficientNetB0 in classifying colon tumors was 100% for the 'Benign' category and 100% for the 'Malignant' category.
+The accuracy of ResNet18 in classifying colon tumors was 99% for the 'Benign' category and 99% for the 'Malignant' category.
+The accuracy of EfficientNetB0 in classifying lung tumors was 93% for the 'Benign' category and 94% for the 'Malignant' category.
+The accuracy of ResNet18 in classifying lung tumors was 90% for the 'Benign' category and 91% for the 'Malignant' category.
+The accuracy of EfficientNetB0 in classifying cervical tumors was 100% for the 'Dyskeratotic' category, 99% for the 'Koilocytotic' category, 100% for the 'Metaplastic' category, 100% for the 'Parabasal' category and 100% for the 'Superficial Intermediate' category.
+The accuracy of ResNet18 in classifying cervical tumors was 98% for the 'Dyskeratotic' category, 98% for the 'Koilocytotic' category, 99% for the 'Metaplastic' category, 100% for the 'Parabasal' category and 98% for the 'Superficial Intermediate' category.
+The accuracy of EfficientNetB0 in classifying gastrointestinal tumors was 99% for the 'Microsatellite Stable (MSS)' category and 99% for the 'Microsatellite Instability Mutated (MSIMUT)' category.
+The accuracy of ResNet18 in classifying gastrointestinal tumors was 98% for the 'Microsatellite Stable (MSS)' category and 97% for the 'Microsatellite Instability Mutated (MSIMUT)' category.
+The accuracy of EfficientNetB0 in classifying brain tumors was 100% for the 'Glioma' category, 100% for the 'Meningioma' category, 100% for the 'No Tumor' category and 100% for the 'Pituitary Tumor' category.
+The accuracy of ResNet18 in classifying brain tumors was 99% for the 'Glioma' category, 100% for the 'Meningioma' category, 100% for the 'No Tumor' category and 99% for the 'Pituitary Tumor' category.
+The accuracy of EfficientNetB0 in classifying bone tumors was 99% for the 'Non-Tumor' category, 99% for the 'Non-Viable' category and 100% for the 'Viable Tumor' category.
+The accuracy of ResNet18 in classifying bone tumors was 99% for the 'Non-Tumor' category, 99% for the 'Non-Viable' category and 99% for the 'Viable Tumor' category.
+
+When tested for computational efficiency in terms of diagnosis speed, EfficientNetB0 was able to perform 40 seconds faster than ResNet18 for 1000 images at a single time.
+The OncoAI app is currently being validated by 30 physicians across the globe for accuracy in medical data.
+
+The significance of OncoAI for cancer patients is (1) free, available cancer screening, (2) an easy, reliable source of cancer education through OncoAIDE, (3) healthcare privacy since all diagnoses and images provided are private, and (4) personalized care as you control your medical decisions.
+The significance of OncoAI for healthcare providers is (1) accurate diagnoses, (2) predictions to aid in prognosis, (3) effective triaging, and (4) expert consultation as a second opinion in medical decisions.
+The significance of OncoAI for biomedical scientists is (1) anonymized data for use in new scientific studies, (2) multimodal data for enhanced research capabilities, and (3) predictive analysis for use in other studies.
+The significance of OncoAI for cancer specialists is (1) a system for easy collaboration to improve efficiency, (2) effective triaging, and (3) precision care.
+
+Current works in progress for OncoAI is new cancers being added for screening, developing wearable AI-integrated devices for point-of-care diagnostics, and collaborating with physicians worldwide to confirm the validity of OncoAI in real-world settings.
+The future directions for OncoAI include prospective clinical trials to ensure accuracy and regulatory approval for clinical deployment.
 """
     
 def initialize_session_state():
