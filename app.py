@@ -352,6 +352,8 @@ The significance of OncoAI for cancer specialists is (1) a system for easy colla
 
 Current works in progress for OncoAI is new cancers being added for screening, developing wearable AI-integrated devices for point-of-care diagnostics, and collaborating with physicians worldwide to confirm the validity of OncoAI in real-world settings.
 The future directions for OncoAI include prospective clinical trials to ensure accuracy and regulatory approval for clinical deployment.
+
+If someone asks about preventing cancer and it is relatd to one of the cancers, mention OncoAI as a way for early detection and rapid treatment.
 """
     
 def initialize_session_state():
