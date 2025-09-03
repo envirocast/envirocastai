@@ -22,9 +22,26 @@ if not GEMINI_API_KEY:
 genai.configure(api_key=GEMINI_API_KEY)
 
 # ------------------------------
-# Page Configuration
+# Page Configuration (Dark Mode)
 # ------------------------------
 st.set_page_config(page_title="Meet Enviro", page_icon="./favicon.ico", layout="wide")
+
+st.markdown("""
+<style>
+body, .stApp, .css-1d391kg, .css-1d391kg * {
+    background-color: #121212 !important;
+    color: #e0e0e0 !important;
+}
+.stButton button {
+    background-color: #1f1f1f !important;
+    color: #e0e0e0 !important;
+}
+.stTextInput input, .stSelectbox select, .stTextArea textarea {
+    background-color: #1f1f1f !important;
+    color: #e0e0e0 !important;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # ------------------------------
 # Session State Initialization
@@ -65,6 +82,8 @@ Focus on pollution, air quality, environmental science. Provide structured respo
         st.session_state.font_family = "Montserrat"
     if 'font_size' not in st.session_state:
         st.session_state.font_size = "medium"
+    if 'current_command' not in st.session_state:
+        st.session_state.current_command = None
 
 initialize_session_state()
 
@@ -80,7 +99,6 @@ def handle_chat_response(response, message_placeholder, command_message=""):
     full_response = f"**Enviro:** " + command_message + "\n\n" if command_message else "**Enviro:** "
     formatted_response = process_response(response.text)
     
-    # Typing effect
     chunks = []
     for line in formatted_response.split('\n'):
         chunks.extend(line.split(' '))
@@ -94,7 +112,6 @@ def handle_chat_response(response, message_placeholder, command_message=""):
         message_placeholder.markdown(full_response + "▌", unsafe_allow_html=True)
     message_placeholder.markdown(full_response, unsafe_allow_html=True)
     
-    # Browser TTS
     if st.session_state.tts_enabled:
         tts_script = f"""
         <script>
@@ -109,16 +126,16 @@ def handle_chat_response(response, message_placeholder, command_message=""):
 def apply_styles():
     size_map = {"small": "0.9rem", "medium": "1rem", "large": "1.2rem", "x-large": "1.4rem"}
     font_size = size_map.get(st.session_state.font_size, "1rem")
-    contrast_bg = "#000000" if st.session_state.high_contrast else "white"
-    contrast_text = "#ffffff" if st.session_state.high_contrast else "black"
+    contrast_bg = "#121212"
+    contrast_text = "#e0e0e0"
     st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family={st.session_state.font_family.replace(' ', '+')}:wght@300;400;500;600;700&display=swap');
     * {{
         font-family: '{st.session_state.font_family}', sans-serif !important;
         font-size: {font_size} !important;
-        background-color: {contrast_bg};
-        color: {contrast_text};
+        background-color: {contrast_bg} !important;
+        color: {contrast_text} !important;
     }}
     </style>
     """, unsafe_allow_html=True)
@@ -138,62 +155,99 @@ def extract_text_from_file(uploaded_file):
         return uploaded_file.getvalue().decode(errors='ignore')
 
 # ------------------------------
-# Sidebar Features
+# Sidebar Groups
 # ------------------------------
+access_level = "Platinum"  # Example; can integrate password-protected access
+
 with st.sidebar:
-    st.header("EnviroCast AI Settings")
-    st.checkbox("Enable Camera Input", key="camera_enabled")
-    st.checkbox("Enable TTS Audio Replies", key="tts_enabled")
-    st.checkbox("High Contrast Mode", key="high_contrast")
+    st.header("EnviroCast AI Controls")
     
-    st.subheader("Font Settings")
-    st.selectbox("Font Family", ["Montserrat", "Roboto", "Arial", "Times New Roman"], key="font_family")
-    st.selectbox("Text Size", ["small", "medium", "large", "x-large"], key="font_size")
+    # --------------------------
+    # Settings & Preferences
+    # --------------------------
+    if access_level != "Bronze":
+        with st.expander("Settings & Preferences", expanded=False):
+            available_fonts = [
+                "Montserrat", "Orbitron", "DM Sans", "Calibri", 
+                "Arial", "Times New Roman", "Roboto", "Open Sans",
+                "Lato", "Poppins", "Ubuntu", "Playfair Display"
+            ]
+            font_family = st.selectbox("Font Family", available_fonts, index=available_fonts.index(st.session_state.font_family))
+            font_size = st.selectbox("Text Size", ["small", "medium", "large", "x-large"], index=["small","medium","large","x-large"].index(st.session_state.font_size))
+            high_contrast = st.checkbox("High Contrast Mode", value=st.session_state.high_contrast)
+            if st.button("Apply Settings"):
+                st.session_state.font_family = font_family
+                st.session_state.font_size = font_size
+                st.session_state.high_contrast = high_contrast
+                apply_styles()
     
-    st.subheader("File Uploads")
-    uploaded_files = st.file_uploader("Upload files (PDF, DOCX, Images)", accept_multiple_files=True)
-    if uploaded_files:
-        for f in uploaded_files:
-            text = extract_text_from_file(f)
-            st.session_state.uploaded_files.append({"name": f.name, "content": text})
-        st.success(f"{len(uploaded_files)} file(s) processed and added to input.")
-
-    st.subheader("Custom Commands")
-    st.text_input("Command Name", key="new_command_name")
-    st.text_area("Command Prompt", key="new_command_prompt")
-    if st.button("Save Custom Command"):
-        name = st.session_state.new_command_name.strip()
-        prompt = st.session_state.new_command_prompt.strip()
-        if name and prompt:
-            st.session_state.custom_commands[name] = {"prompt": prompt}
-            st.success(f"Custom command '{name}' saved!")
-
-    st.subheader("Chat History")
-    if st.button("Download Chat History"):
-        history_str = "\n".join([f"{m['role']}: {m['content']}" for m in st.session_state.messages])
-        b64 = base64.b64encode(history_str.encode()).decode()
-        href = f'<a href="data:file/text;base64,{b64}" download="enviro_chat.txt">Download Chat History</a>'
-        st.markdown(href, unsafe_allow_html=True)
+    # --------------------------
+    # File Upload
+    # --------------------------
+    if access_level == "Platinum":
+        with st.expander("File Upload", expanded=False):
+            st.markdown("**Upload files (PDF, DOCX, Images)**")
+            uploaded_files = st.file_uploader("Upload files", type=['png','jpg','jpeg','pdf','doc','docx','txt'], accept_multiple_files=True)
+            if uploaded_files:
+                for f in uploaded_files:
+                    text = extract_text_from_file(f)
+                    st.session_state.uploaded_files.append({"name": f.name, "content": text})
+                st.success(f"{len(uploaded_files)} file(s) processed.")
+    
+    # --------------------------
+    # Camera Input
+    # --------------------------
+    if access_level in ["Silver","Gold","Platinum"]:
+        with st.expander("Camera Input", expanded=False):
+            camera_enabled = st.checkbox("Enable Camera Input", value=st.session_state.camera_image is not None)
+            if camera_enabled:
+                camera_image = st.camera_input("Take a picture")
+                if camera_image:
+                    st.session_state.camera_image = camera_image
+                    st.image(camera_image, caption="Captured Image")
+    
+    # --------------------------
+    # Voice & TTS
+    # --------------------------
+    with st.expander("Voice & TTS", expanded=False):
+        st.checkbox("Enable Text-to-Speech", key="tts_enabled", help="Enviro will read responses aloud in browser.")
+    
+    # --------------------------
+    # Commands
+    # --------------------------
+    with st.expander("Prebuilt / Custom Commands", expanded=False):
+        st.write("Active command:", st.session_state.current_command if st.session_state.current_command else "None")
+        # Add buttons for prebuilt commands here if defined
+        st.text_input("New Custom Command Name", key="new_command_name")
+        st.text_area("New Custom Command Prompt", key="new_command_prompt")
+        if st.button("Save Custom Command"):
+            name = st.session_state.new_command_name.strip()
+            prompt = st.session_state.new_command_prompt.strip()
+            if name and prompt:
+                st.session_state.custom_commands[name] = {"prompt": prompt}
+                st.success(f"Custom command '{name}' saved!")
+    
+    # --------------------------
+    # Chat History Download
+    # --------------------------
+    with st.expander("Chat History", expanded=False):
+        if st.button("Download Chat History"):
+            history_str = "\n".join([f"{m['role']}: {m['content']}" for m in st.session_state.messages])
+            b64 = base64.b64encode(history_str.encode()).decode()
+            href = f'<a href="data:file/text;base64,{b64}" download="enviro_chat.txt">Download Chat History</a>'
+            st.markdown(href, unsafe_allow_html=True)
 
 # ------------------------------
-# Apply Styles
+# Main Chat Area
 # ------------------------------
 apply_styles()
-
-# ------------------------------
-# Display Chat Messages
-# ------------------------------
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"], unsafe_allow_html=True)
 
-# ------------------------------
-# Chat Input
-# ------------------------------
 prompt = st.chat_input("What would you like to learn about?")
 if prompt:
     input_parts = [prompt]
-    # Include file content
     for f in st.session_state.uploaded_files:
         input_parts.append(f["content"])
     
