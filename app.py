@@ -4,7 +4,6 @@ import time
 import re
 import os
 import tempfile
-import hashlib
 from PyPDF2 import PdfReader
 from docx import Document
 import pytesseract
@@ -22,23 +21,48 @@ if not GEMINI_API_KEY:
 genai.configure(api_key=GEMINI_API_KEY)
 
 # ------------------------------
-# Page Configuration (Dark Mode)
+# Page Config
 # ------------------------------
-st.set_page_config(page_title="Meet Enviro", page_icon="./favicon.ico", layout="wide")
+st.set_page_config(page_title="EnviroCast AI", page_icon="🌎", layout="wide")
 
+# ------------------------------
+# Dark Theme & Styling
+# ------------------------------
 st.markdown("""
 <style>
+/* Main dark background */
 body, .stApp, .css-1d391kg, .css-1d391kg * {
-    background-color: #121212 !important;
+    background-color: #1b1b2f !important;
     color: #e0e0e0 !important;
 }
+
+/* Chat bubbles */
+.stChatMessage {
+    background-color: #2a2a3f !important;
+    color: #e0e0e0 !important;
+}
+
+/* Buttons */
 .stButton button {
-    background-color: #1f1f1f !important;
-    color: #e0e0e0 !important;
+    background-color: #4a4a8a !important;
+    color: #ffffff !important;
+    border-radius: 8px !important;
 }
+
+/* Inputs */
 .stTextInput input, .stSelectbox select, .stTextArea textarea {
-    background-color: #1f1f1f !important;
+    background-color: #2a2a3f !important;
     color: #e0e0e0 !important;
+    border: 1px solid #5555aa !important;
+    border-radius: 5px !important;
+}
+
+/* Sidebar & expanders */
+.stSidebar, .stExpander {
+    background-color: #2a2a3f !important;
+    border: 1px solid #5555aa !important;
+    border-radius: 6px !important;
+    padding: 5px !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -90,15 +114,27 @@ initialize_session_state()
 # ------------------------------
 # Helper Functions
 # ------------------------------
+def apply_styles():
+    size_map = {"small": "0.9rem", "medium": "1rem", "large": "1.2rem", "x-large": "1.4rem"}
+    font_size = size_map.get(st.session_state.font_size, "1rem")
+    st.markdown(f"""
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family={st.session_state.font_family.replace(' ', '+')}:wght@300;400;500;600;700&display=swap');
+    * {{
+        font-family: '{st.session_state.font_family}', sans-serif !important;
+        font-size: {font_size} !important;
+    }}
+    </style>
+    """, unsafe_allow_html=True)
+
 def process_response(text):
     text = re.sub(r'\n\s*\n\s*\n', '\n\n', text)
     text = re.sub(r'(\n[*-] .+?)(\n[^*\n-])', r'\1\n\2', text)
     return text.strip()
 
-def handle_chat_response(response, message_placeholder, command_message=""):
-    full_response = f"**Enviro:** " + command_message + "\n\n" if command_message else "**Enviro:** "
+def handle_chat_response(response, message_placeholder):
+    full_response = "**Enviro:** "
     formatted_response = process_response(response.text)
-    
     chunks = []
     for line in formatted_response.split('\n'):
         chunks.extend(line.split(' '))
@@ -112,6 +148,7 @@ def handle_chat_response(response, message_placeholder, command_message=""):
         message_placeholder.markdown(full_response + "▌", unsafe_allow_html=True)
     message_placeholder.markdown(full_response, unsafe_allow_html=True)
     
+    # TTS in browser
     if st.session_state.tts_enabled:
         tts_script = f"""
         <script>
@@ -122,23 +159,6 @@ def handle_chat_response(response, message_placeholder, command_message=""):
         st.components.v1.html(tts_script)
     
     return full_response
-
-def apply_styles():
-    size_map = {"small": "0.9rem", "medium": "1rem", "large": "1.2rem", "x-large": "1.4rem"}
-    font_size = size_map.get(st.session_state.font_size, "1rem")
-    contrast_bg = "#121212"
-    contrast_text = "#e0e0e0"
-    st.markdown(f"""
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family={st.session_state.font_family.replace(' ', '+')}:wght@300;400;500;600;700&display=swap');
-    * {{
-        font-family: '{st.session_state.font_family}', sans-serif !important;
-        font-size: {font_size} !important;
-        background-color: {contrast_bg} !important;
-        color: {contrast_text} !important;
-    }}
-    </style>
-    """, unsafe_allow_html=True)
 
 def extract_text_from_file(uploaded_file):
     mime_type = uploaded_file.type
@@ -157,108 +177,72 @@ def extract_text_from_file(uploaded_file):
 # ------------------------------
 # Sidebar Groups
 # ------------------------------
-access_level = "Platinum"  # Example; can integrate password-protected access
-
 with st.sidebar:
-    st.header("EnviroCast AI Controls")
-    
-    # --------------------------
-    # Settings & Preferences
-    # --------------------------
-    if access_level != "Bronze":
-        with st.expander("Settings & Preferences", expanded=False):
-            available_fonts = [
-                "Montserrat", "Orbitron", "DM Sans", "Calibri", 
-                "Arial", "Times New Roman", "Roboto", "Open Sans",
-                "Lato", "Poppins", "Ubuntu", "Playfair Display"
-            ]
-            font_family = st.selectbox("Font Family", available_fonts, index=available_fonts.index(st.session_state.font_family))
-            font_size = st.selectbox("Text Size", ["small", "medium", "large", "x-large"], index=["small","medium","large","x-large"].index(st.session_state.font_size))
-            high_contrast = st.checkbox("High Contrast Mode", value=st.session_state.high_contrast)
-            if st.button("Apply Settings"):
-                st.session_state.font_family = font_family
-                st.session_state.font_size = font_size
-                st.session_state.high_contrast = high_contrast
-                apply_styles()
-    
-    # --------------------------
-    # File Upload
-    # --------------------------
-    if access_level == "Platinum":
-        with st.expander("File Upload", expanded=False):
-            st.markdown("**Upload files (PDF, DOCX, Images)**")
-            uploaded_files = st.file_uploader("Upload files", type=['png','jpg','jpeg','pdf','doc','docx','txt'], accept_multiple_files=True)
-            if uploaded_files:
-                for f in uploaded_files:
-                    text = extract_text_from_file(f)
-                    st.session_state.uploaded_files.append({"name": f.name, "content": text})
-                st.success(f"{len(uploaded_files)} file(s) processed.")
-    
-    # --------------------------
-    # Camera Input
-    # --------------------------
-    if access_level in ["Silver","Gold","Platinum"]:
-        with st.expander("Camera Input", expanded=False):
-            camera_enabled = st.checkbox("Enable Camera Input", value=st.session_state.camera_image is not None)
-            if camera_enabled:
-                camera_image = st.camera_input("Take a picture")
-                if camera_image:
-                    st.session_state.camera_image = camera_image
-                    st.image(camera_image, caption="Captured Image")
-    
-    # --------------------------
-    # Voice & TTS
-    # --------------------------
+    st.header("EnviroCast Controls")
+
+    with st.expander("Settings & Preferences", expanded=True):
+        available_fonts = [
+            "Montserrat", "Orbitron", "DM Sans", "Calibri", 
+            "Arial", "Times New Roman", "Roboto", "Open Sans",
+            "Lato", "Poppins", "Ubuntu", "Playfair Display"
+        ]
+        st.session_state.font_family = st.selectbox("Font Family", available_fonts, index=available_fonts.index(st.session_state.font_family))
+        st.session_state.font_size = st.selectbox("Text Size", ["small", "medium", "large", "x-large"], index=["small","medium","large","x-large"].index(st.session_state.font_size))
+        st.session_state.high_contrast = st.checkbox("High Contrast Mode", value=st.session_state.high_contrast)
+        if st.button("Apply Settings"):
+            apply_styles()
+
+    with st.expander("File Upload", expanded=False):
+        st.markdown("Upload files (PDF, DOCX, Images, TXT)")
+        uploaded_files = st.file_uploader("Upload files", type=['png','jpg','jpeg','pdf','doc','docx','txt'], accept_multiple_files=True)
+        if uploaded_files:
+            for f in uploaded_files:
+                text = extract_text_from_file(f)
+                st.session_state.uploaded_files.append({"name": f.name, "content": text})
+            st.success(f"{len(uploaded_files)} file(s) processed.")
+
+    with st.expander("Camera Input", expanded=False):
+        camera_image = st.camera_input("Take a picture")
+        if camera_image:
+            st.session_state.camera_image = camera_image
+            st.image(camera_image, caption="Captured Image")
+
     with st.expander("Voice & TTS", expanded=False):
-        st.checkbox("Enable Text-to-Speech", key="tts_enabled", help="Enviro will read responses aloud in browser.")
-    
-    # --------------------------
-    # Commands
-    # --------------------------
-    with st.expander("Prebuilt / Custom Commands", expanded=False):
-        st.write("Active command:", st.session_state.current_command if st.session_state.current_command else "None")
-        # Add buttons for prebuilt commands here if defined
-        st.text_input("New Custom Command Name", key="new_command_name")
-        st.text_area("New Custom Command Prompt", key="new_command_prompt")
-        if st.button("Save Custom Command"):
+        st.session_state.tts_enabled = st.checkbox("Enable Text-to-Speech", value=st.session_state.tts_enabled)
+
+    with st.expander("Custom Commands", expanded=False):
+        st.text_input("New Command Name", key="new_command_name")
+        st.text_area("New Command Prompt", key="new_command_prompt")
+        if st.button("Save Command"):
             name = st.session_state.new_command_name.strip()
             prompt = st.session_state.new_command_prompt.strip()
             if name and prompt:
-                st.session_state.custom_commands[name] = {"prompt": prompt}
-                st.success(f"Custom command '{name}' saved!")
-    
-    # --------------------------
-    # Chat History Download
-    # --------------------------
-    with st.expander("Chat History", expanded=False):
-        if st.button("Download Chat History"):
-            history_str = "\n".join([f"{m['role']}: {m['content']}" for m in st.session_state.messages])
-            b64 = base64.b64encode(history_str.encode()).decode()
-            href = f'<a href="data:file/text;base64,{b64}" download="enviro_chat.txt">Download Chat History</a>'
-            st.markdown(href, unsafe_allow_html=True)
+                st.session_state.custom_commands[name] = prompt
+                st.success(f"Saved command: {name}")
 
 # ------------------------------
-# Main Chat Area
+# Main Chat
 # ------------------------------
 apply_styles()
+st.title("🌎 EnviroCast AI")
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"], unsafe_allow_html=True)
 
-prompt = st.chat_input("What would you like to learn about?")
+prompt = st.chat_input("Ask a question about pollution or the environment...")
 if prompt:
-    input_parts = [prompt]
-    for f in st.session_state.uploaded_files:
-        input_parts.append(f["content"])
-    
     st.chat_message("user").markdown(prompt)
     st.session_state.messages.append({"role": "user", "content": prompt})
-    
-    with st.chat_message("assistant"):
-        message_placeholder = st.empty()
+    with st.chat_message("assistant") as placeholder:
         try:
+            # Combine prompt with uploaded files or camera info
+            input_parts = [prompt]
+            if st.session_state.uploaded_files:
+                input_parts.extend([f['content'] for f in st.session_state.uploaded_files])
+            if st.session_state.camera_image:
+                input_parts.append("Image provided for analysis.")
+            
             response = st.session_state.chat_session.send_message(input_parts)
-            full_response = handle_chat_response(response, message_placeholder)
-            st.session_state.messages.append({"role": "assistant", "content": full_response})
+            handle_chat_response(response, placeholder)
         except Exception as e:
-            st.error(f"Error: {str(e)}")
+            st.error(f"Error: {e}")
