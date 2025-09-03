@@ -194,7 +194,7 @@ genai.configure(api_key=GEMINI_API_KEY)
 
 # Page configuration
 st.set_page_config(
-    page_title="EnviroCast AI",
+    page_title="Meet Enviro",
     page_icon="./favicon.ico",
     layout="wide"
 )
