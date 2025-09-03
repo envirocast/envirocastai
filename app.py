@@ -281,6 +281,8 @@ The site includes interactive simulations, models, and visualizations to help us
 Social media campaign: Instagram @envirocast_tech.
 
 Always provide citations at the end of every response using good and credible sources:
+
+Make sure to only talk about environmental, focus only on the topics mentioned in these instructions, do not involve in anything unrelated to the topic or anything illegal or negative.
 """
     
 def initialize_session_state():
